@@ -36,7 +36,7 @@ export default function SidebarDashboard({ isOpen, setIsOpen }: SidebarProps) {
         <div className="h-16 flex items-center justify-between px-6 border-b">
           <div className="flex items-center gap-4" >
              <Image src={"/img/logo.jpeg"} alt="Logo" width={300} height={300} className="w-10 h-10 border rounded-lg" />
-             <span className="font-bold text-lg text-gray-900">Rappi</span>
+             <span className="font-bold text-lg text-gray-900">Rappi APP</span>
           </div>
           {/* Tombol Close Mobile */}
           <button

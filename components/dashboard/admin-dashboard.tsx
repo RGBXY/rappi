@@ -18,6 +18,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import TabNavigation from "../ui/tab";
+import { useProductStore } from "@/stores/useProductStore";
 
 // Data dummy chart area bertumpuk/bergelombang
 const chartData = [
@@ -38,45 +39,8 @@ const chartData = [
   { date: "Jun 30", current: 85, previous: 50 },
 ];
 
-// Data baris tabel
-const tableRows = [
-  {
-    id: 1,
-    header: "Cover page",
-    type: "Cover page",
-    target: 18,
-    limit: 5,
-    reviewer: "Eddie Lake",
-  },
-  {
-    id: 2,
-    header: "Table of contents",
-    type: "Table of contents",
-    target: 29,
-    limit: 24,
-    reviewer: "Eddie Lake",
-  },
-  {
-    id: 3,
-    header: "Executive summary",
-    type: "Narrative",
-    target: 10,
-    limit: 13,
-    reviewer: "Eddie Lake",
-  },
-];
-
 export default function AdminDashboard() {
-    const dashboard_tabs = [
-        { label: "Products", badge: 1 },
-        { label: "Stock in", badge: 2 },
-        { label: "Stock out", badge:6 },
-        { label: "Returns", badge: 7 },
-        { label: "Reworked" },
-        { label: "Perish" },
-        { label: "Stock Change Log" },
-    ];
-
+  const store = useProductStore();
   const [activeRange, setActiveRange] = useState("Last 30 days");
   const [currentTab, setCurrentTab] = useState("Products");
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -90,10 +54,7 @@ export default function AdminDashboard() {
         <div className="flex items-center justify-between">
           <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-xs">
             <ShoppingCart className="w-6 h-6" />
-          </div>
-          <span className="flex items-center text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
-            <TrendingUp className="w-3 h-3 mr-1" /> +5%
-          </span>
+          </div>  
         </div>
         <div className="mt-5">
           <h3 className="text-3xl font-bold tracking-tight text-gray-900">10</h3>
@@ -111,9 +72,8 @@ export default function AdminDashboard() {
           
         </div>
         <div className="mt-5">
-          <h3 className="text-3xl font-bold tracking-tight text-gray-900">1,234</h3>
+          <h3 className="text-3xl font-bold tracking-tight text-gray-900">200</h3>
           <p className="font-medium text-gray-500 mt-1">Warehouse Stock</p>
-         
         </div>
       </div>
 
@@ -230,32 +190,35 @@ export default function AdminDashboard() {
                 <tr className="border-b border-gray-100 bg-gray-50/50 text-gray-500 font-medium">
                     <th className="py-3.5 px-4">Product ID</th>
                     <th className="py-3.5 px-4">Product Name</th>
-                    <th className="py-3.5 px-4 text-center">Display Stock</th>
-                    <th className="py-3.5 px-4 text-center">Warehouse Stock</th>
+                    <th className="py-3.5 px-4">Display Stock</th>
+                    <th className="py-3.5 px-4">Warehouse Stock</th>
                     <th className="py-3.5 px-4">Total Stock</th>
                 </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 text-gray-700">
-                {tableRows.map((row) => (
+                {store.products.map((row) => (
                     <tr key={row.id} className="hover:bg-gray-50/60 transition-colors">
-                    <td className="py-3 px-4 font-medium text-gray-900">{row.header}</td>
+                    <td className="py-3 px-4 font-semibold text-gray-900">{row.productId}</td>
                     <td className="py-3 px-4">
-                        <span className="px-2.5 py-0.5 rounded-md border border-gray-200 bg-gray-50 text-gray-600 font-medium text-[11px]">
-                        {row.type}
+                        <span className="py-0.5 rounded-md ">
+                        {row.name}
                         </span>
                     </td>
-                    <td className="py-3 px-4 text-center">
-                        <span className="inline-block px-3 py-1 rounded-md border border-gray-200 min-w-10 text-center font-medium">
-                        {row.target}
+                    <td className="py-3 px-4">
+                        <span className="py-0.5 rounded-md ">
+                        {row.stockDisplay}
                         </span>
                     </td>
-                    <td className="py-3 px-4 text-center">
-                        <span className="inline-block px-3 py-1 rounded-md border border-gray-200 min-w-10 text-center font-medium">
-                        {row.limit}
+                    <td className="py-3 px-4">
+                        <span className="py-0.5 rounded-md ">
+                        {row.stockWareHouse}
                         </span>
                     </td>
-                    <td className="py-3 px-4 font-medium text-gray-800">{row.reviewer}</td>
-                    
+                    <td className="py-3 px-4">
+                        <span className="py-0.5 rounded-md ">
+                        {row.stock}
+                        </span>
+                    </td>                                      
                     </tr>
                 ))}
                 </tbody>
@@ -272,32 +235,41 @@ export default function AdminDashboard() {
                 <tr className="border-b border-gray-100 bg-gray-50/50 text-gray-500 font-medium">
                     <th className="py-3.5 px-4">Product ID</th>
                     <th className="py-3.5 px-4">Product Name</th>
-                    <th className="py-3.5 px-4 text-center">Qty</th>
-                    <th className="py-3.5 px-4 text-center">Reason</th>
+                    <th className="py-3.5 px-4">Qty</th>
+                    <th className="py-3.5 px-4">Reason</th>
                     <th className="py-3.5 px-4">Status</th>
+                    <th className="py-3.5 px-4">Date</th>
                 </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 text-gray-700">
-                {tableRows.map((row) => (
+                {store.returnList.map((row) => (
                     <tr key={row.id} className="hover:bg-gray-50/60 transition-colors">
-                    <td className="py-3 px-4 font-medium text-gray-900">{row.header}</td>
+                    <td className="py-3 px-4 font-semibold text-gray-900">{row.productId}</td>
                     <td className="py-3 px-4">
-                        <span className="px-2.5 py-0.5 rounded-md border border-gray-200 bg-gray-50 text-gray-600 font-medium text-[11px]">
-                        {row.type}
+                        <span className="py-0.5 rounded-md ">
+                        {row.name}
                         </span>
                     </td>
-                    <td className="py-3 px-4 text-center">
-                        <span className="inline-block px-3 py-1 rounded-md border border-gray-200 min-w-10 text-center font-medium">
-                        {row.target}
+                    <td className="py-3 px-4">
+                        <span className="py-0.5 rounded-md ">
+                        {row.qty}
                         </span>
-                    </td>
-                    <td className="py-3 px-4 text-center">
-                        <span className="inline-block px-3 py-1 rounded-md border border-gray-200 min-w-10 text-center font-medium">
-                        {row.limit}
+                    </td>                    
+                    <td className="py-3 px-4">
+                        <span className="py-0.5 rounded-md ">
+                        {row.reason}
                         </span>
-                    </td>
-                    <td className="py-3 px-4 font-medium text-gray-800">{row.reviewer}</td>
-                    
+                    </td>                    
+                    <td className="py-3 px-4">
+                        <span className="py-0.5 rounded-md ">
+                        {row.status}
+                        </span>
+                    </td>                    
+                    <td className="py-3 px-4">
+                        <span className="py-0.5 rounded-md ">
+                        {row.date}
+                        </span>
+                    </td>                    
                     </tr>
                 ))}
                 </tbody>

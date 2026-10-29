@@ -11,6 +11,7 @@ import {
   Package,
   PackageMinus,
   Truck,
+  Boxes,
 } from "lucide-react"
 
 export default function ProductCard() {
@@ -27,7 +28,7 @@ export default function ProductCard() {
           
         </div>
         <div className="mt-5">
-          <h3 className="text-3xl font-bold tracking-tight text-gray-900">1,234</h3>
+          <h3 className="text-3xl font-bold tracking-tight text-gray-900">200</h3>
           <p className="font-medium text-gray-500 mt-1">Warehouse Stock</p>
          
         </div>
@@ -36,12 +37,12 @@ export default function ProductCard() {
       <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between">
         <div className="flex items-center justify-between">
           <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-xs">
-            <Package className="w-6 h-6" />
+            <Boxes className="w-6 h-6" />
           </div>
           
         </div>
         <div className="mt-5">
-          <h3 className="text-3xl font-bold tracking-tight text-gray-900">1,234</h3>
+          <h3 className="text-3xl font-bold tracking-tight text-gray-900">150</h3>
           <p className="font-medium text-gray-500 mt-1">Display Stock</p>
          
         </div>
@@ -55,7 +56,7 @@ export default function ProductCard() {
           </div>
         </div>
         <div className="mt-5">
-          <h3 className="text-3xl font-bold tracking-tight text-gray-900">20</h3>
+          <h3 className="text-3xl font-bold tracking-tight text-gray-900">3</h3>
           <p className="font-medium text-gray-500 mt-1">Return Product This Week</p>
         </div>
       </div>
