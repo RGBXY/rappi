@@ -1,11 +1,12 @@
+import SppgTable from '@/components/Sppg/sppg-table'
 import React from 'react'
 
-const SPPGPage = () => {
+const SppgPage = () => {
   return (
     <div>
-      
+      <SppgTable/>
     </div>
   )
 }
 
-export default SPPGPage
+export default SppgPage

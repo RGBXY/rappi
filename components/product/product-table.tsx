@@ -58,13 +58,14 @@ const [showToast, setShowToast] = useState(false);
     }
   > = {
     Products: {
-      headers: ["Product ID", "Product Name", "Display Stock", "Warehouse Stock", "Total Stock"],
+      headers: ["Product ID", "Product Name", "Harga Satuan", "Display Stock", "Warehouse Stock", "Total Stock"],
       getData: () => store.products,
       onUpdate: store.updateProduct,
       renderRow: (row) => (
         <>
           <td className="py-3 px-4 font-semibold ">{row.productId}</td>
           <td className="py-3 px-4 ">{row.name}</td>
+          <td className="py-3 px-4 ">Rp. {row.hargaSatuan}</td>
           <td className="py-3 px-4 font-medium">{row.stockDisplay}</td>
           <td className="py-3 px-4">{row.stockWareHouse}</td>
           <td className="py-3 px-4">
@@ -432,13 +433,13 @@ const [showToast, setShowToast] = useState(false);
                       {/* Tombol Delete / Action Dinamis */}
                       {currentConfig.onUpdate && (
                         <td className="py-3 px-4">
-                          <button
-                            onClick={() => currentConfig.onUpdate!(row.id)}
-                            className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                            title="Action"
-                          >
-                            <Edit className="w-3.5 h-3.5" />
-                          </button>
+                           <button
+                        type="button"
+                        className="px-3 py-1.5 flex items-center gap-1.5 rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100 text-xs transition-colors cursor-pointer"
+                      >
+                        <Edit  className="w-3.5 h-3.5" />
+                        <span>Edit</span>
+                      </button>
                         </td>
                       )}
                     </tr>

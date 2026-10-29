@@ -24,10 +24,10 @@ export const useProductStore = create<InventoryState>()(
   persist(
     (set) => ({
       products: [
-        {  id: 1, productId: "PRD-251026-04", name: "Banana", stockDisplay: 120, stockWareHouse: 50, stock: 170, date: "25-10-2026" },
-        {  id: 2, productId: "PRD-251026-05", name: "Corn", stockDisplay: 120, stockWareHouse: 50, stock: 170, date: "25-10-2026" },
-        {  id: 3, productId: "PRD-251026-06", name: "Paddy", stockDisplay: 120, stockWareHouse: 50, stock: 170, date: "25-10-2026" },
-        {  id: 4, productId: "PRD-251026-07", name: "Cassava", stockDisplay: 120, stockWareHouse: 50, stock: 170, date: "25-10-2026" },
+        {  id: 1, productId: "PRD-251026-04", name: "Banana",hargaSatuan: 7000, stockDisplay: 120, stockWareHouse: 50, stock: 170, date: "25-10-2026" },
+        {  id: 2, productId: "PRD-251026-05", name: "Corn", hargaSatuan: 7000, stockDisplay: 120, stockWareHouse: 50, stock: 170, date: "25-10-2026" },
+        {  id: 3, productId: "PRD-251026-06", name: "Paddy", hargaSatuan: 7000, stockDisplay: 120, stockWareHouse: 50, stock: 170, date: "25-10-2026" },
+        {  id: 4, productId: "PRD-251026-07", name: "Cassava", hargaSatuan: 7000, stockDisplay: 120, stockWareHouse: 50, stock: 170, date: "25-10-2026" },
       ],
       stockInList: [
         {  id: 1, productId: "PRD-251026-01", name: "Cassava", supplier: "Budi", qty: 170, date: "25-10-2026" },
