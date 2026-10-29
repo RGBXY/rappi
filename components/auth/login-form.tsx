@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../../stores/useUserStore";
-import { LogIn, Lock, Mail, AlertCircle } from "lucide-react";
+import { LogIn, Lock, Mail, AlertCircle, Building, Users } from "lucide-react";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -16,26 +16,51 @@ export default function LoginForm() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Pastikan status loading selalu reset saat form terbuka
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
     setIsLoading(true);
 
-    const result = login(formData.email, formData.password);
+    try {
+      const result = login(formData.email, formData.password);
 
-    if (result.success) {
-      // Masuk ke dashboard utama jika akun approved
-      router.push("/dashboard");
-    } else {
-      // Menampilkan pesan error jika salah sandi / akun masih pending
-      setErrorMessage(result.message);
+      if (result.success) {
+        // Navigasi ke halaman dasbor
+        router.push("/dashboard");
+      } else {
+        setErrorMessage(result.message);
+        setIsLoading(false);
+      }
+    } catch {
+      setErrorMessage("Terjadi kendala saat memproses login. Silakan coba lagi.");
       setIsLoading(false);
+    }
+  };
+
+  const handleSelectRoleDemo = (role: "coperative" | "sppg") => {
+    setIsLoading(false);
+    setErrorMessage(null);
+    if (role === "coperative") {
+      setFormData({
+        email: "coperative@rappi.com",
+        password: "password123",
+      });
+    } else {
+      setFormData({
+        email: "sppg@rappi.com",
+        password: "password123",
+      });
     }
   };
 
   return (
     <div className="w-full max-w-md p-8 bg-white rounded-2xl border border-gray-200 shadow-xs space-y-6">
-      {/* Brand & Title */}
+      {/* Brand & Judul */}
       <div className="space-y-1">
         <div className="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center font-bold text-white text-base mb-3 shadow-2xs">
           R
@@ -44,11 +69,36 @@ export default function LoginForm() {
           Masuk ke Portal Operasional
         </h1>
         <p className="text-xs text-gray-500">
-          Gunakan akun terdaftar KUD, SPPG, atau Super Admin.
+          Silakan masuk sesuai peran akun: Koperasi atau SPPG.
         </p>
       </div>
 
-      {/* Pesan Kesalahan / Status Pending */}
+      {/* Pilihan Akun Demo */}
+      <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-2">
+        <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider block">
+          Pilih Akun Demo Cepat:
+        </span>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => handleSelectRoleDemo("coperative")}
+            className="flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-xs font-medium transition cursor-pointer"
+          >
+            <Building className="w-3.5 h-3.5 shrink-0" />
+            <span>Peran Koperasi</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => handleSelectRoleDemo("sppg")}
+            className="flex items-center justify-center gap-1.5 py-1.5 px-2.5 rounded-lg border border-blue-300 bg-blue-50 text-blue-700 hover:bg-blue-100 text-xs font-medium transition cursor-pointer"
+          >
+            <Users className="w-3.5 h-3.5 shrink-0" />
+            <span>Peran SPPG</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Pesan Kesalahan */}
       {errorMessage && (
         <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2.5">
           <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
@@ -60,7 +110,7 @@ export default function LoginForm() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-            Email
+            Alamat Email
           </label>
           <div className="relative">
             <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -79,7 +129,7 @@ export default function LoginForm() {
 
         <div>
           <label className="block text-xs font-semibold text-gray-700 mb-1.5">
-            Password
+            Kata Sandi
           </label>
           <div className="relative">
             <Lock className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />

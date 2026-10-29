@@ -1,12 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { InvoiceItem } from "../stores/useInvoiceStore"; // Sesuaikan path file invoice store kamu
+import { InvoiceItem } from "../stores/useInvoiceStore";
 
 // 1. Tipe data produk di dalam receipt
 export interface ReceiptProduct {
   productId: string;
   name: string;
   qty: number;
+  satuan?: string;
   price: number;
 }
 
@@ -25,15 +26,12 @@ export interface ReceiptItem {
 // 3. Interface State & Actions
 interface ReceiptStore {
   receipts: ReceiptItem[];
-  addReceiptFromInvoice: (
-    invoice: InvoiceItem,
-  ) => void;
+  addReceiptFromInvoice: (invoice: InvoiceItem) => void;
 }
 
 export const useReceiptStore = create<ReceiptStore>()(
   persist(
     (set) => ({
-      // Mock data awal untuk kebutuhan demo / prototype
       receipts: [
         {
           id: 1,
@@ -42,25 +40,26 @@ export const useReceiptStore = create<ReceiptStore>()(
           orderId: "ORD-251026-04",
           sppg: "SPPG Kulon Progo Galur Pandowan",
           paidAt: "25-10-2026 14:30",
-          totalAmount: 125000,
+          totalAmount: 675000,
           products: [
             {
               productId: "PRD-251026-04",
-              name: "Pisang",
+              name: "Pisang Cavendish",
               qty: 50,
-              price: 1500,
+              satuan: "Sisir",
+              price: 7000,
             },
             {
               productId: "PRD-251026-05",
-              name: "Jagung",
+              name: "Jagung Manis",
               qty: 50,
-              price: 1000,
+              satuan: "Kg",
+              price: 6500,
             },
           ],
         },
       ],
 
-      // Fungsi otomatis mengubah Invoice menjadi Receipt saat dibayar
       addReceiptFromInvoice: (invoice) => {
         const now = new Date();
         const dateStr = now.toLocaleDateString("id-ID");
@@ -69,12 +68,12 @@ export const useReceiptStore = create<ReceiptStore>()(
           minute: "2-digit",
         });
 
-        // Hitung total bayar berdasarkan qty produk (harga default 1500 jika belum ada field harga)
         const productsWithPrice = invoice.products.map((p) => ({
           productId: p.productId,
           name: p.name,
           qty: p.qty,
-          price: (p as any).price || 1500,
+          satuan: p.satuan || "Kg",
+          price: (p as any).price || 7000,
         }));
 
         const totalAmount = productsWithPrice.reduce(

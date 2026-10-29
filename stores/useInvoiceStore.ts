@@ -1,31 +1,30 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-// 1. Tipe data produk di dalam invoice (ditambahkan field price)
+// 1. Tipe data produk di dalam invoice
 export interface InvoiceProduct {
   productId: string;
   name: string;
   qty: number;
-  price: number; // Harga satuan produk
+  satuan?: string;
+  price: number;
   date: string;
 }
 
-// 2. Tipe data item invoice (ditambahkan field totalAmount)
+// 2. Tipe data item invoice
 export interface InvoiceItem {
   id: number;
   invoiceId: string;
   orderId: string;
   sppg?: string;
   date: string;
-  totalAmount: number; // Total harga keseluruhan invoice (sum of qty * price)
+  totalAmount: number;
   products: InvoiceProduct[];
 }
 
 // 3. Interface State & Actions Store
 interface InvoiceStore {
   invoice: InvoiceItem[];
-  // Action opsional jika ingin menghitung ulang total / tambah data
-  // addInvoice?: (newInvoice: InvoiceItem) => void;
 }
 
 export const useInvoiceStore = create<InvoiceStore>()(
@@ -38,20 +37,22 @@ export const useInvoiceStore = create<InvoiceStore>()(
           orderId: "ORD-251026-04",
           sppg: "SPPG Kulon Progo Galur Pandowan",
           date: "25-10-2026",
-          totalAmount: 125000, // (50 * 1500) + (50 * 1000) = 75.000 + 50.000
+          totalAmount: 675000,
           products: [
             {
               productId: "PRD-251026-04",
-              name: "Pisang",
+              name: "Pisang Cavendish",
               qty: 50,
-              price: 1500,
+              satuan: "Sisir",
+              price: 7000,
               date: "25-10-2026",
             },
             {
               productId: "PRD-251026-05",
-              name: "Jagung",
+              name: "Jagung Manis",
               qty: 50,
-              price: 1000,
+              satuan: "Kg",
+              price: 6500,
               date: "25-10-2026",
             },
           ],
@@ -62,21 +63,23 @@ export const useInvoiceStore = create<InvoiceStore>()(
           orderId: "ORD-261026-04",
           sppg: "SPPG Bantul Sewon",
           date: "26-10-2026",
-          totalAmount: 175000, // (50 * 2000) + (50 * 1500) = 100.000 + 75.000
+          totalAmount: 950000,
           products: [
             {
-              productId: "PRD-251026-06",
-              name: "Ubi",
+              productId: "PRD-251026-01",
+              name: "Beras Pandan Wangi",
               qty: 50,
-              price: 2000,
-              date: "25-10-2026",
+              satuan: "Kg",
+              price: 14000,
+              date: "26-10-2026",
             },
             {
-              productId: "PRD-251026-01",
+              productId: "PRD-251026-07",
               name: "Singkong",
               qty: 50,
-              price: 1500,
-              date: "25-10-2026",
+              satuan: "Kg",
+              price: 5000,
+              date: "26-10-2026",
             },
           ],
         },

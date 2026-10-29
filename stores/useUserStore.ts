@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 // Tipe Role Utama
-export type UserRole = "super_admin" | "kud" | "sppg";
+export type UserRole = "coperative" | "sppg" | "kud" | "super_admin";
 
 // Sub-jabatan spesifik sesuai kebutuhan
 export type UserSubRole = 
@@ -30,7 +30,7 @@ interface AuthState {
   users: User[];
   
   // Actions Autentikasi
-  login: (email: string, password: string) => { success: boolean; message: string };
+  login: (email: string, password: string) => { success: boolean; message: string; role?: UserRole };
   register: (data: Omit<User, "id" | "status" | "createdAt">) => { success: boolean; message: string };
   logout: () => void;
 
@@ -45,44 +45,58 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       currentUser: null,
       users: [
-        // Akun default Super Admin
+        // Akun Coperative Utama
         {
           id: 1,
-          name: "Super Admin",
-          email: "admin@rappi.com",
+          name: "Koperasi Budi Luhur",
+          email: "coperative@rappi.com",
           password: "password123",
-          role: "super_admin",
-          subRole: "admin",
+          role: "coperative",
+          subRole: "supervisor",
           status: "approved",
           createdAt: "2026-01-01",
         },
-        // Contoh Akun KUD Approved
+        // Akun KUD / Coperative Tambahan
         {
           id: 2,
           name: "Budi Santoso",
           email: "budi@kud.com",
           password: "password123",
-          role: "kud",
+          role: "coperative",
           subRole: "pengawas_warehouse",
           status: "approved",
           createdAt: "2026-02-10",
         },
-        // Contoh Akun SPPG Pending (menunggu konfirmasi)
+        // Akun SPPG Utama
         {
           id: 3,
+          name: "SPPG Kulon Progo",
+          email: "sppg@rappi.com",
+          password: "password123",
+          role: "sppg",
+          subRole: "purchasing",
+          status: "approved",
+          createdAt: "2026-03-01",
+        },
+        // Akun SPPG Tambahan
+        {
+          id: 4,
           name: "Siti Rahma",
           email: "siti@sppg.com",
           password: "password123",
           role: "sppg",
           subRole: "qc_inbound",
-          status: "pending",
+          status: "approved",
           createdAt: "2026-03-01",
         },
       ],
 
       login: (email, password) => {
         const { users } = get();
-        const user = users.find((u) => u.email === email && u.password === password);
+        // Normalize role if stored as "kud" to behave as "coperative"
+        const user = users.find(
+          (u) => u.email.toLowerCase() === email.trim().toLowerCase() && u.password === password
+        );
 
         if (!user) {
           return { success: false, message: "Email atau password salah." };
@@ -102,15 +116,24 @@ export const useAuthStore = create<AuthState>()(
           };
         }
 
+        // Standardize kud as coperative
+        const normalizedRole: UserRole = user.role === "kud" ? "coperative" : user.role;
+
         // Simpan sesi user tanpa menyertakan password
         const { password: _, ...sessionUser } = user;
-        set({ currentUser: sessionUser as User });
-        return { success: true, message: "Login berhasil." };
+        const finalUser: User = {
+          ...sessionUser,
+          role: normalizedRole,
+        };
+        set({ currentUser: finalUser });
+        return { success: true, message: "Login berhasil.", role: normalizedRole };
       },
 
       register: (data) => {
         const { users } = get();
-        const emailExists = users.some((u) => u.email === data.email);
+        const emailExists = users.some(
+          (u) => u.email.toLowerCase() === data.email.trim().toLowerCase()
+        );
 
         if (emailExists) {
           return { success: false, message: "Email sudah terdaftar." };
@@ -118,6 +141,7 @@ export const useAuthStore = create<AuthState>()(
 
         const newUser: User = {
           ...data,
+          email: data.email.trim(),
           id: Date.now(),
           status: "pending", // Wajib pending secara default
           createdAt: new Date().toISOString().split("T")[0],

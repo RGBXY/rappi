@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import {
   X,
   CheckCircle2,
-  Receipt,
   Eye,
   Send,
   Printer,
@@ -26,7 +25,7 @@ export default function ReceiptTable() {
   };
 
   const handleSendReceipt = (receiptId: string) => {
-    triggerToast(`Kwitansi ${receiptId} berhasil dikirim!`);
+    triggerToast(`Kwitansi ${receiptId} berhasil dikirimkan ke pihak terkait!`);
   };
 
   return (
@@ -36,30 +35,30 @@ export default function ReceiptTable() {
         <div>
           <h1 className="text-2xl font-semibold text-gray-900">Data Kwitansi</h1>
           <p className="text-sm text-gray-500 mt-1">
-            Daftar bukti penerimaan dan pelunasan pembayaran yang sah.
+            Daftar bukti tanda terima dan pelunasan pembayaran transaksi yang sah.
           </p>
         </div>
       </div>
 
-      {/* Dynamic Data Table */}
+      {/* Tabel Data Kwitansi */}
       <div className="bg-white rounded-2xl border border-gray-200 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-sm">
             <thead>
-              <tr className="border-b border-gray-100 bg-gray-50/50 text-gray-500 font-medium">
+              <tr className="border-b border-gray-100 bg-gray-50/50 text-gray-500 font-medium text-xs">
                 <th className="py-3.5 px-4">No. Kwitansi</th>
-                <th className="py-3.5 px-4">Ref. Invoice</th>
+                <th className="py-3.5 px-4">Ref. Faktur</th>
                 <th className="py-3.5 px-4">ID Pesanan</th>
-                <th className="py-3.5 px-4">SPPG / Tujuan</th>
-                <th className="py-3.5 px-4">Waktu Bayar</th>
-                <th className="py-3.5 px-4">Total</th>
-                <th className="py-3.5 px-4">Aksi</th>
+                <th className="py-3.5 px-4">Tujuan / SPPG</th>
+                <th className="py-3.5 px-4">Waktu Pelunasan</th>
+                <th className="py-3.5 px-4 text-right">Total Bayar</th>
+                <th className="py-3.5 px-4 text-center">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 text-gray-700">
               {receiptStore.receipts.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="py-8 text-center text-gray-400">
+                  <td colSpan={7} className="py-8 text-center text-gray-400">
                     Belum ada data kwitansi.
                   </td>
                 </tr>
@@ -67,16 +66,15 @@ export default function ReceiptTable() {
                 receiptStore.receipts.map((row) => (
                   <tr key={row.receiptId} className="hover:bg-gray-50/60 transition-colors">
                     <td className="py-3 px-4 font-semibold text-gray-900">{row.receiptId}</td>
-                    <td className="py-3 px-4 text-gray-600">{row.invoiceId}</td>
-                    <td className="py-3 px-4 text-gray-600">{row.orderId}</td>
-                    <td className="py-3 px-4 text-gray-700">{row.sppg}</td>
-                    <td className="py-3 px-4 text-gray-500">{row.paidAt}</td>
-                    <td className="py-3 px-4 font-bold text-gray-900">
+                    <td className="py-3 px-4 text-gray-500 text-xs">{row.invoiceId}</td>
+                    <td className="py-3 px-4 text-gray-500 text-xs">{row.orderId}</td>
+                    <td className="py-3 px-4 text-gray-700 font-medium">{row.sppg}</td>
+                    <td className="py-3 px-4 text-gray-500 text-xs">{row.paidAt}</td>
+                    <td className="py-3 px-4 font-bold text-gray-900 text-right">
                       Rp {row.totalAmount.toLocaleString("id-ID")}
                     </td>
-                    <td className="py-3 px-4">
-                      <div className="flex items-center gap-2">
-                        {/* Aksi 1: Menampilkan Modal Receipt */}
+                    <td className="py-3 px-4 text-center">
+                      <div className="inline-flex items-center gap-1.5">
                         <button
                           type="button"
                           onClick={() => setSelectedReceipt(row)}
@@ -86,7 +84,6 @@ export default function ReceiptTable() {
                           <span>Detail</span>
                         </button>
 
-                        {/* Aksi 2: Mengirim Kwitansi */}
                         <button
                           type="button"
                           onClick={() => handleSendReceipt(row.receiptId)}
@@ -105,11 +102,10 @@ export default function ReceiptTable() {
         </div>
       </div>
 
-      {/* ================= MODAL VISUAL KWITANSI ================= */}
+      {/* Modal Kwitansi Fisik */}
       {selectedReceipt && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
           <div className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
-            {/* Tombol Tutup */}
             <button
               type="button"
               onClick={() => setSelectedReceipt(null)}
@@ -118,7 +114,6 @@ export default function ReceiptTable() {
               <X className="w-5 h-5" />
             </button>
 
-            {/* Konten Kwitansi Fisik */}
             <div className="p-6">
               {/* Status Header */}
               <div className="flex flex-col items-center text-center pb-4 border-b border-dashed border-gray-200">
@@ -139,7 +134,7 @@ export default function ReceiptTable() {
                   <span className="font-medium text-gray-800">{selectedReceipt.paidAt}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-500">Ref. Invoice:</span>
+                  <span className="text-gray-500">Ref. Faktur:</span>
                   <span className="font-medium text-gray-800">{selectedReceipt.invoiceId}</span>
                 </div>
                 <div className="flex justify-between">
@@ -148,7 +143,7 @@ export default function ReceiptTable() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Tujuan / SPPG:</span>
-                  <span className="font-medium text-gray-800 text-right truncate max-w-45">
+                  <span className="font-medium text-gray-800 text-right truncate max-w-44">
                     {selectedReceipt.sppg}
                   </span>
                 </div>
@@ -160,7 +155,7 @@ export default function ReceiptTable() {
                 {selectedReceipt.products.map((item, idx) => (
                   <div key={idx} className="flex justify-between text-gray-600">
                     <span>
-                      {item.name} <span className="text-gray-400">×{item.qty}</span>
+                      {item.name} <span className="text-gray-400">×{item.qty} {item.satuan || "Kg"}</span>
                     </span>
                     <span className="font-medium text-gray-900">
                       Rp {(item.qty * item.price).toLocaleString("id-ID")}
@@ -169,14 +164,14 @@ export default function ReceiptTable() {
                 ))}
               </div>
 
-              {/* Grand Total */}
+              {/* Status Lunas */}
               <div className="pt-3 flex justify-between items-center text-sm font-bold text-gray-900">
                 <span>STATUS</span>
                 <span className="text-emerald-600 font-extrabold tracking-wider">LUNAS</span>
               </div>
             </div>
 
-            {/* Footer Modal / Tombol Cetak & Tutup */}
+            {/* Footer Modal Cetak */}
             <div className="p-4 bg-gray-50 border-t border-gray-100 flex gap-2">
               <button
                 type="button"
@@ -198,7 +193,7 @@ export default function ReceiptTable() {
         </div>
       )}
 
-      {/* Komponen Toast Pop-up */}
+      {/* Komponen Toast Notifikasi */}
       {showToast && (
         <div className="fixed bottom-5 right-5 z-50 flex items-center gap-3 px-4 py-3 bg-white text-gray-900 rounded-xl shadow-lg border border-gray-200 transition-all animate-bounce-once">
           <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />

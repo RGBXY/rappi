@@ -6,6 +6,7 @@ export interface OrderProduct {
   productId: string;
   name: string;
   qty: number;
+  satuan?: string;
   date: string;
   hargaSatuan: number;
 }
@@ -36,16 +37,18 @@ export const useOrderStore = create<OrderState>()(
           products: [
             {
               productId: "PRD-251026-04",
-              name: "Pisang",
+              name: "Pisang Cavendish",
               hargaSatuan: 7000,
               qty: 50,
+              satuan: "Sisir",
               date: "25-10-2026",
             },
             {
               productId: "PRD-251026-05",
-              name: "Jagung",
-              hargaSatuan: 7000,
+              name: "Jagung Manis",
+              hargaSatuan: 6500,
               qty: 50,
+              satuan: "Kg",
               date: "25-10-2026",
             },
           ],
@@ -57,18 +60,20 @@ export const useOrderStore = create<OrderState>()(
           date: "26-10-2026",
           products: [
             {
-              productId: "PRD-251026-06",
-              name: "Ubi",
-              hargaSatuan: 7000,
+              productId: "PRD-251026-01",
+              name: "Beras Pandan Wangi",
+              hargaSatuan: 14000,
               qty: 50,
-              date: "25-10-2026",
+              satuan: "Kg",
+              date: "26-10-2026",
             },
             {
-              productId: "PRD-251026-01",
+              productId: "PRD-251026-07",
               name: "Singkong",
-              hargaSatuan: 7000,
+              hargaSatuan: 5000,
               qty: 50,
-              date: "25-10-2026",
+              satuan: "Kg",
+              date: "26-10-2026",
             },
           ],
         },

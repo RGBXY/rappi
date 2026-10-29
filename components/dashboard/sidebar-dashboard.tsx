@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { sidebar_groups } from "@/lib/data";
+import { usePathname, useRouter } from "next/navigation";
+import { getSidebarGroups } from "@/lib/data";
+import { useAuthStore } from "@/stores/useUserStore";
 import Image from "next/image";
+import { LogOut } from "lucide-react";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -12,6 +14,16 @@ interface SidebarProps {
 
 export default function SidebarDashboard({ isOpen, setIsOpen }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const currentUser = useAuthStore((s) => s.currentUser);
+  const logout = useAuthStore((s) => s.logout);
+
+  const groups = getSidebarGroups(currentUser?.role);
+
+  const handleLogout = () => {
+    logout();
+    router.push("/login");
+  };
 
   return (
     <>
@@ -23,7 +35,7 @@ export default function SidebarDashboard({ isOpen, setIsOpen }: SidebarProps) {
         />
       )}
 
-      {/* 2. Container Sidebar */}
+      {/* 2. Kontainer Sidebar */}
       <aside
         className={`
           fixed top-0 bottom-0 left-0 z-40 w-64 bg-white border-r flex flex-col
@@ -34,15 +46,23 @@ export default function SidebarDashboard({ isOpen, setIsOpen }: SidebarProps) {
       >
         {/* Header Sidebar */}
         <div className="h-16 flex items-center justify-between px-6 border-b">
-          <div className="flex items-center gap-4" >
-             <Image src={"/img/logo.jpeg"} alt="Logo" width={300} height={300} className="w-10 h-10 border rounded-lg" />
-             <span className="font-bold text-lg text-gray-900">Rappi APP</span>
+          <div className="flex items-center gap-3">
+            <Image
+              src={"/img/logo.jpeg"}
+              alt="Logo Rappi"
+              width={300}
+              height={300}
+              className="w-9 h-9 border rounded-lg"
+            />
+            <span className="font-bold text-lg text-gray-900 tracking-tight">
+              RAPPI APP
+            </span>
           </div>
-          {/* Tombol Close Mobile */}
+          {/* Tombol Tutup Mobile */}
           <button
             onClick={() => setIsOpen(false)}
             className="md:hidden p-1.5 rounded-lg text-gray-500 hover:bg-gray-100"
-            aria-label="Tutup menu"
+            aria-label="Tutup menu navigasi"
           >
             <svg
               className="w-5 h-5"
@@ -62,12 +82,12 @@ export default function SidebarDashboard({ isOpen, setIsOpen }: SidebarProps) {
 
         {/* Menu Navigasi Berkelompok */}
         <nav className="flex-1 px-3 py-4 space-y-6 overflow-y-auto">
-          {sidebar_groups.map((section, idx) => (
+          {groups.map((section, idx) => (
             <div
               key={idx}
               className={idx !== 0 ? "pt-4 border-t border-gray-100" : ""}
             >
-              {/* Judul Kategori (jika ada) */}
+              {/* Judul Kategori */}
               {section.group && (
                 <p className="px-3 pb-2 text-[11px] font-bold tracking-wider text-gray-400 uppercase select-none">
                   {section.group}
@@ -92,7 +112,11 @@ export default function SidebarDashboard({ isOpen, setIsOpen }: SidebarProps) {
                       }`}
                     >
                       <Icon
-                        className={`w-4 h-4 shrink-0 ${isActive ? "text-primary-foreground" : "text-foreground"}`}
+                        className={`w-4 h-4 shrink-0 ${
+                          isActive
+                            ? "text-primary-foreground"
+                            : "text-foreground"
+                        }`}
                       />
                       <span>{item.title}</span>
                     </Link>
@@ -103,9 +127,23 @@ export default function SidebarDashboard({ isOpen, setIsOpen }: SidebarProps) {
           ))}
         </nav>
 
-        {/* Footer Sidebar */}
-        <div className="p-4 border-t text-sm text-gray-500">
-          User Profile
+        {/* Footer Sidebar: Profil Pengguna & Keluar */}
+        <div className="p-4 border-t border-gray-100 flex items-center justify-between">
+          <div className="min-w-0 pr-2">
+            <p className="text-xs font-semibold text-gray-900 truncate">
+              {currentUser?.name || "Pengguna"}
+            </p>
+            <p className="text-[11px] text-gray-500 capitalize">
+              Peran: {currentUser?.role === "sppg" ? "SPPG" : "Koperasi"}
+            </p>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="p-1.5 rounded-lg text-gray-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+            title="Keluar dari akun"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
         </div>
       </aside>
     </>

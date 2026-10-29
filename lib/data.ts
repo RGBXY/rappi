@@ -1,17 +1,11 @@
 import {
   LayoutDashboard,
-  Bot,
-  Boxes,
   Package,
   Truck,
   Receipt,
-  Users,
   ArrowDownToLine,
   ArrowUpFromLine,
-  ClipboardList,
   type LucideIcon,
-  ReceiptCent,
-  ReceiptText,
   ShoppingCart,
   FileText,
   Building,
@@ -24,59 +18,128 @@ export interface NavItem {
 }
 
 export interface NavGroup {
-  group?: string; // Judul seksi (misal: "PRODUCT", "TRANSACTION")
+  group?: string; // Judul seksi (misal: "PRODUK", "TRANSAKSI", "DATA KOPERASI")
   items: NavItem[];
 }
 
-export const sidebar_groups: NavGroup[] = [
+// 1. Menu untuk Peran Koperasi (Coperative)
+export const coperative_sidebar_groups: NavGroup[] = [
   {
-    // Kelompok Menu Utama (tanpa judul grup)
     items: [
       {
-        title: "Dashboard",
+        title: "Dasbor",
         url: "/dashboard",
         icon: LayoutDashboard,
       },
     ],
   },
   {
-    group: "PRODUCT",
+    group: "PRODUK",
     items: [
       {
-        title: "Products",
+        title: "Produk",
         url: "/product",
         icon: Package,
       },
       {
-        title: "Suppliers",
+        title: "Pemasok",
         url: "/supplier",
         icon: Truck,
       },
     ],
   },
   {
-    group: "TRANSACTION",
+    group: "TRANSAKSI",
     items: [
-        {
-        title: "Order",
+      {
+        title: "Pesanan",
         url: "/order",
-        icon: ShoppingCart, 
-        },
-        {
+        icon: ShoppingCart,
+      },
+      {
         title: "SPPG",
         url: "/sppg",
         icon: Building,
-        },
-        {
-        title: "Invoice",
+      },
+      {
+        title: "Faktur",
         url: "/invoice",
-        icon: FileText,     
-        },
-        {
-        title: "Receipt",
+        icon: FileText,
+      },
+      {
+        title: "Kwitansi",
         url: "/receipt",
-        icon: Receipt,      
-        },
+        icon: Receipt,
+      },
     ],
   },
 ];
+
+// 2. Menu untuk Peran SPPG (Sistem SPPG)
+export const sppg_sidebar_groups: NavGroup[] = [
+  {
+    items: [
+      {
+        title: "Dasbor",
+        url: "/dashboard",
+        icon: LayoutDashboard,
+      },
+    ],
+  },
+  {
+    group: "DATA KOPERASI",
+    items: [
+      {
+        title: "Data Koperasi",
+        url: "/sppg/coperative",
+        icon: Building,
+      },
+    ],
+  },
+  {
+    group: "DATA PRODUK",
+    items: [
+      {
+        title: "Barang Masuk",
+        url: "/sppg/barang-masuk",
+        icon: ArrowDownToLine,
+      },
+      {
+        title: "Barang Keluar",
+        url: "/sppg/barang-keluar",
+        icon: ArrowUpFromLine,
+      },
+    ],
+  },
+  {
+    group: "DATA PEMESANAN",
+    items: [
+      {
+        title: "Pesanan",
+        url: "/sppg/pesanan",
+        icon: ShoppingCart,
+      },
+      {
+        title: "Faktur",
+        url: "/sppg/invoice",
+        icon: FileText,
+      },
+      {
+        title: "Kwitansi",
+        url: "/sppg/kwitansi",
+        icon: Receipt,
+      },
+    ],
+  },
+];
+
+// Default fallback
+export const sidebar_groups: NavGroup[] = coperative_sidebar_groups;
+
+// Helper untuk mengambil navigasi sesuai role aktif
+export function getSidebarGroups(role?: string): NavGroup[] {
+  if (role === "sppg") {
+    return sppg_sidebar_groups;
+  }
+  return coperative_sidebar_groups;
+}
