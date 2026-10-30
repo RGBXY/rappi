@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../../stores/useUserStore";
 import { LogIn, Lock, Mail, AlertCircle, Building, Users } from "lucide-react";
+import Link from "next/link";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -154,6 +155,13 @@ export default function LoginForm() {
           <LogIn className="w-4 h-4" />
           <span>{isLoading ? "Memproses..." : "Masuk"}</span>
         </button>
+        <Link href={"/"} >
+          <button
+            className="w-full py-2.5 px-4 rounded-xl bg-gray-300 hover:bg-gray-400 text-gray-700 text-xs font-semibold shadow-2xs transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+          >
+            <span>Kembali ke Homepage</span>
+          </button>
+        </Link>
       </form>
     </div>
   );

@@ -40,7 +40,7 @@ export default function ProductTable() {
     { label: "Stok Keluar" },
     { label: "Retur", badge: store.returnList.length },
     { label: "Olah Kembali" },
-    { label: "Kedaluwarsa" },
+    { label: "Pemusnahan" },
     { label: "Riwayat Stok" },
   ];
 
