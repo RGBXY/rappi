@@ -6,7 +6,6 @@ import {
   ScanBarcode,
   X,
   CheckCircle2,
-  Trash2,
   Calendar,
   Star,
 } from "lucide-react";
@@ -173,7 +172,6 @@ export default function BarangMasukTable() {
                 <th className="py-3.5 px-4 text-center">Jumlah Masuk</th>
                 <th className="py-3.5 px-4">Tanggal Masuk</th>
                 <th className="py-3.5 px-4">Petugas QC</th>
-                <th className="py-3.5 px-4 text-right">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 text-gray-700">
@@ -206,18 +204,6 @@ export default function BarangMasukTable() {
                     </td>
                     <td className="py-3 px-4 text-gray-600 text-xs">
                       {row.petugas}
-                    </td>
-                    <td className="py-3 px-4 text-right">
-                      <button
-                        onClick={() => {
-                          store.deleteBarangMasuk(row.id);
-                          triggerToast("Data barang masuk berhasil dihapus.");
-                        }}
-                        className="p-1.5 rounded-lg text-gray-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
-                        title="Hapus data"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
                     </td>
                   </tr>
                 ))
