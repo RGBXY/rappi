@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "../../stores/useUserStore";
 import { LogIn, Lock, Mail, AlertCircle, Building, Users } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -63,8 +64,8 @@ export default function LoginForm() {
     <div className="w-full max-w-md p-8 bg-white rounded-2xl border border-gray-200 shadow-xs space-y-6">
       {/* Brand & Judul */}
       <div className="space-y-1">
-        <div className="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center font-bold text-white text-base mb-3 shadow-2xs">
-          R
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center text-primary-foreground text-sm font-black border overflow-hidden p-1 bg-white">
+          <Image src={"/img/logo.jpeg"} width={300} height={300} alt="logo" className="object-cover h-full w-full"/>
         </div>
         <h1 className="text-xl font-bold text-gray-900 tracking-tight">
           Masuk ke Portal Operasional
