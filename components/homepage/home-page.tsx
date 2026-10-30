@@ -293,9 +293,9 @@ export default function LandingPage() {
             <div className="w-8 h-8 rounded-lg flex items-center justify-center text-primary-foreground text-sm font-black border overflow-hidden p-1 bg-white">
               <Image src={"/img/logo.jpeg"} width={300} height={300} alt="logo" className="object-cover h-full w-full"/>
             </div>
-            Rappid APP
+            Rappi APP
           </div>
-          <p>© 2026 Rappid All rights reserved.</p>
+          <p>© 2026 Rappi All rights reserved.</p>
         </div>
       </footer>
     </div>
