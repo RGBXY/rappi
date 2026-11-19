@@ -7,7 +7,7 @@ import {
   Boxes,
 } from "lucide-react";
 
-export default function ProductCard() {
+export default function StockCard() {
   return (
     <div className="space-y-6 mx-auto">
       {/* 1. Baris Kartu Metrik (4 Kolom) */}

@@ -18,6 +18,9 @@ interface InventoryState {
   perishList: BaseItem[];
   stockChangeLog: BaseItem[];
   // Actions / Methods
+  addProduct: (item: Omit<BaseItem, "id">) => void;
+  editProduct: (id: number, updatedItem: Partial<BaseItem>) => void;
+  deleteProduct: (id: number) => void;
   updateProduct: (id: number) => void;
   upadteReturn: (id: number) => void;
   addStockIn: (item: any) => void;
@@ -222,6 +225,33 @@ export const useProductStore = create<InventoryState>()(
         },
       ],
 
+      addProduct: (item) =>
+        set((s) => {
+          const newItem: BaseItem = {
+            id: Date.now(),
+            productId: item.productId,
+            name: item.name,
+            satuan: item.satuan,
+            hargaSatuan: item.hargaSatuan,
+            stockDisplay: item.stockDisplay ?? 0,
+            stockWareHouse: item.stockWareHouse ?? 0,
+            stock: item.stock ?? 0,
+            date: item.date || new Date().toISOString().split("T")[0],
+          };
+          return {
+            products: [...s.products, newItem],
+          };
+        }),
+      editProduct: (id, updatedItem) =>
+        set((s) => ({
+          products: s.products.map((p) =>
+            p.id === id ? { ...p, ...updatedItem } : p
+          ),
+        })),
+      deleteProduct: (id) =>
+        set((s) => ({
+          products: s.products.filter((p) => p.id !== id),
+        })),
       updateProduct: (id) =>
         set((s) => ({ products: s.products.filter((p) => p.id !== id) })),
       upadteReturn: (id) =>

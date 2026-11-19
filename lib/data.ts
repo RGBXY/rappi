@@ -9,6 +9,7 @@ import {
   ShoppingCart,
   FileText,
   Building,
+  Boxes,
 } from "lucide-react";
 
 export interface NavItem {
@@ -40,6 +41,11 @@ export const coperative_sidebar_groups: NavGroup[] = [
         title: "Produk",
         url: "/product",
         icon: Package,
+      },
+      {
+        title: "Stok",
+        url: "/stok",
+        icon: Boxes,
       },
       {
         title: "Pemasok",
