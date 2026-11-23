@@ -116,6 +116,7 @@ export default function PesananTable() {
               <table className="w-full text-left border-collapse text-sm">
                 <thead>
                   <tr className="border-b border-gray-100 bg-gray-50/50 text-gray-500 font-medium text-xs">
+                    <th className="py-2.5 px-3">ID Stok</th>
                     <th className="py-2.5 px-3">Nama Produk</th>
                     <th className="py-2.5 px-3 text-center">Kuantitas</th>
                     <th className="py-2.5 px-3 text-right">Harga Satuan</th>
@@ -125,6 +126,9 @@ export default function PesananTable() {
                 <tbody className="divide-y divide-gray-100 text-gray-700">
                   {selectedOrder.products.map((item, idx) => (
                     <tr key={idx}>
+                      <td className="py-2.5 px-3 font-semibold text-gray-900 text-xs font-mono">
+                        {item.stockId || "STK-251026-01"}
+                      </td>
                       <td className="py-2.5 px-3 font-medium text-gray-900">
                         {item.name}
                       </td>

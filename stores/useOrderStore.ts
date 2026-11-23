@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 // 1. Tipe data produk di dalam order
 export interface OrderProduct {
   productId: string;
+  stockId?: string;
   name: string;
   qty: number;
   satuan?: string;
@@ -36,6 +37,7 @@ export const useOrderStore = create<OrderState>()(
           date: "25-10-2026",
           products: [
             {
+              stockId: "STK-251026-01",
               productId: "PRD-251026-04",
               name: "Pisang Cavendish",
               hargaSatuan: 7000,
@@ -44,6 +46,7 @@ export const useOrderStore = create<OrderState>()(
               date: "25-10-2026",
             },
             {
+              stockId: "STK-251026-02",
               productId: "PRD-251026-05",
               name: "Jagung Manis",
               hargaSatuan: 6500,
@@ -60,6 +63,7 @@ export const useOrderStore = create<OrderState>()(
           date: "26-10-2026",
           products: [
             {
+              stockId: "STK-251026-01",
               productId: "PRD-251026-01",
               name: "Beras Pandan Wangi",
               hargaSatuan: 14000,
@@ -68,6 +72,7 @@ export const useOrderStore = create<OrderState>()(
               date: "26-10-2026",
             },
             {
+              stockId: "STK-251026-03",
               productId: "PRD-251026-07",
               name: "Singkong",
               hargaSatuan: 5000,

@@ -65,6 +65,7 @@ export interface SppgOrderItem {
   totalAmount: number;
   products: {
     productId: string;
+    stockId?: string;
     name: string;
     qty: number;
     satuan: string;
@@ -82,6 +83,7 @@ export interface SppgInvoiceItem {
   totalAmount: number;
   products: {
     productId: string;
+    stockId?: string;
     name: string;
     qty: number;
     satuan: string;
@@ -335,6 +337,7 @@ export const useSppgSystemStore = create<SppgSystemState>()(
           totalAmount: 2450000,
           products: [
             {
+              stockId: "STK-251026-01",
               productId: "PRD-251026-01",
               name: "Beras Pandan Wangi",
               qty: 150,
@@ -342,6 +345,7 @@ export const useSppgSystemStore = create<SppgSystemState>()(
               hargaSatuan: 14000,
             },
             {
+              stockId: "STK-251026-01",
               productId: "PRD-251026-04",
               name: "Pisang Cavendish",
               qty: 50,
@@ -359,6 +363,7 @@ export const useSppgSystemStore = create<SppgSystemState>()(
           totalAmount: 1680000,
           products: [
             {
+              stockId: "STK-251026-02",
               productId: "PRD-251026-06",
               name: "Telur Ayam Ras Segar",
               qty: 60,
@@ -380,6 +385,7 @@ export const useSppgSystemStore = create<SppgSystemState>()(
           totalAmount: 2450000,
           products: [
             {
+              stockId: "STK-251026-01",
               productId: "PRD-251026-01",
               name: "Beras Pandan Wangi",
               qty: 150,
@@ -387,6 +393,7 @@ export const useSppgSystemStore = create<SppgSystemState>()(
               price: 14000,
             },
             {
+              stockId: "STK-251026-01",
               productId: "PRD-251026-04",
               name: "Pisang Cavendish",
               qty: 50,
@@ -405,6 +412,7 @@ export const useSppgSystemStore = create<SppgSystemState>()(
           totalAmount: 1680000,
           products: [
             {
+              stockId: "STK-251026-02",
               productId: "PRD-251026-06",
               name: "Telur Ayam Ras Segar",
               qty: 60,
@@ -498,6 +506,7 @@ export const useSppgSystemStore = create<SppgSystemState>()(
             totalAmount: newOrder.totalAmount,
             products: newOrder.products.map((p) => ({
               productId: p.productId,
+              stockId: p.stockId || "STK-251026-01",
               name: p.name,
               qty: p.qty,
               satuan: p.satuan,

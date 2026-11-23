@@ -68,7 +68,7 @@ export default function StockCard() {
           </div>
           <div className="mt-5">
             <h3 className="text-3xl font-bold tracking-tight text-gray-900">
-              170 <span className="text-lg font-semibold text-gray-500">Sisir</span>
+              10 <span className="text-lg font-semibold text-gray-500">Sisir</span>
             </h3>
             <p className="font-medium text-gray-500 mt-1">
               Produk Olah Kembali

@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 // 1. Tipe data produk di dalam invoice
 export interface InvoiceProduct {
   productId: string;
+  stockId?: string;
   name: string;
   qty: number;
   satuan?: string;
@@ -40,6 +41,7 @@ export const useInvoiceStore = create<InvoiceStore>()(
           totalAmount: 675000,
           products: [
             {
+              stockId: "STK-251026-01",
               productId: "PRD-251026-04",
               name: "Pisang Cavendish",
               qty: 50,
@@ -48,6 +50,7 @@ export const useInvoiceStore = create<InvoiceStore>()(
               date: "25-10-2026",
             },
             {
+              stockId: "STK-251026-02",
               productId: "PRD-251026-05",
               name: "Jagung Manis",
               qty: 50,
@@ -66,6 +69,7 @@ export const useInvoiceStore = create<InvoiceStore>()(
           totalAmount: 950000,
           products: [
             {
+              stockId: "STK-251026-01",
               productId: "PRD-251026-01",
               name: "Beras Pandan Wangi",
               qty: 50,
@@ -74,6 +78,7 @@ export const useInvoiceStore = create<InvoiceStore>()(
               date: "26-10-2026",
             },
             {
+              stockId: "STK-251026-03",
               productId: "PRD-251026-07",
               name: "Singkong",
               qty: 50,
