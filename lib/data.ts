@@ -115,6 +115,11 @@ export const sppg_sidebar_groups: NavGroup[] = [
         url: "/sppg/barang-keluar",
         icon: ArrowUpFromLine,
       },
+      {
+        title: "Stok",
+        url: "/sppg/stok",
+        icon: Boxes,
+      },
     ],
   },
   {

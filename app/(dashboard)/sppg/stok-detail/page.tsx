@@ -1,5 +1,10 @@
-import { redirect } from "next/navigation";
+import SppgStokTable from "@/components/sppg-system/stok-table";
+import React from "react";
 
 export default function StokDetailPage() {
-  redirect("/sppg/coperative");
+  return (
+    <div>
+      <SppgStokTable />
+    </div>
+  );
 }

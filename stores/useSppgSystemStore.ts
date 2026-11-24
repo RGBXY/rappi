@@ -35,6 +35,8 @@ export interface CoperativeReviewItem {
 export interface SppgBarangMasukItem {
   id: number;
   kodeMasuk: string;
+  orderId?: string;
+  stockId: string;
   productId: string;
   namaBarang: string;
   pemasok: string;
@@ -47,6 +49,7 @@ export interface SppgBarangMasukItem {
 export interface SppgBarangKeluarItem {
   id: number;
   kodeKeluar: string;
+  stockId: string;
   productId: string;
   namaBarang: string;
   tujuan: string;
@@ -54,6 +57,19 @@ export interface SppgBarangKeluarItem {
   satuan: string;
   date: string;
   petugas: string;
+}
+
+export interface SppgReturnRecord {
+  id: number;
+  orderId: string;
+  stockId: string;
+  productId: string;
+  namaBarang: string;
+  pemasok: string;
+  qty: number;
+  satuan: string;
+  reason: string;
+  date: string;
 }
 
 export interface SppgOrderItem {
@@ -116,6 +132,7 @@ interface SppgSystemState {
   orders: SppgOrderItem[];
   invoices: SppgInvoiceItem[];
   receipts: SppgReceiptItem[];
+  sppgReturnList: SppgReturnRecord[];
 
   // Actions
   addReview: (item: Omit<CoperativeReviewItem, "id">) => void;
@@ -124,6 +141,7 @@ interface SppgSystemState {
   deleteBarangMasuk: (id: number) => void;
   addBarangKeluar: (item: Omit<SppgBarangKeluarItem, "id">) => void;
   deleteBarangKeluar: (id: number) => void;
+  addSppgReturn: (item: Omit<SppgReturnRecord, "id">) => void;
   addOrder: (item: Omit<SppgOrderItem, "id">) => void;
   payInvoice: (invoiceId: string) => void;
 }
@@ -259,6 +277,8 @@ export const useSppgSystemStore = create<SppgSystemState>()(
         {
           id: 1,
           kodeMasuk: "BM-271026-01",
+          orderId: "ORD-SPPG-251026-01",
+          stockId: "STK-251026-01",
           productId: "PRD-251026-01",
           namaBarang: "Beras Pandan Wangi",
           pemasok: "Koperasi Budi Luhur",
@@ -270,6 +290,8 @@ export const useSppgSystemStore = create<SppgSystemState>()(
         {
           id: 2,
           kodeMasuk: "BM-281026-02",
+          orderId: "ORD-SPPG-281026-02",
+          stockId: "STK-251026-02",
           productId: "PRD-251026-06",
           namaBarang: "Telur Ayam Ras",
           pemasok: "Koperasi Budi Luhur",
@@ -281,6 +303,8 @@ export const useSppgSystemStore = create<SppgSystemState>()(
         {
           id: 3,
           kodeMasuk: "BM-291026-03",
+          orderId: "ORD-SPPG-251026-01",
+          stockId: "STK-251026-02",
           productId: "PRD-251026-05",
           namaBarang: "Jagung Manis",
           pemasok: "KUD Tani Makmur",
@@ -289,12 +313,26 @@ export const useSppgSystemStore = create<SppgSystemState>()(
           date: "29-10-2026",
           petugas: "Siti Rahma",
         },
+        {
+          id: 4,
+          kodeMasuk: "BM-291026-04",
+          orderId: "ORD-SPPG-251026-01",
+          stockId: "STK-251026-01",
+          productId: "PRD-251026-04",
+          namaBarang: "Pisang Cavendish",
+          pemasok: "Koperasi Budi Luhur",
+          qty: 45,
+          satuan: "Sisir",
+          date: "29-10-2026",
+          petugas: "Ahmad Zaki",
+        },
       ],
 
       barangKeluarList: [
         {
           id: 1,
           kodeKeluar: "BK-281026-01",
+          stockId: "STK-251026-01",
           productId: "PRD-251026-01",
           namaBarang: "Beras Pandan Wangi",
           tujuan: "Dapur Masak MBG Pagi",
@@ -306,6 +344,7 @@ export const useSppgSystemStore = create<SppgSystemState>()(
         {
           id: 2,
           kodeKeluar: "BK-281026-02",
+          stockId: "STK-251026-02",
           productId: "PRD-251026-06",
           namaBarang: "Telur Ayam Ras",
           tujuan: "Menu Sarapan Sehat Siswa",
@@ -317,6 +356,7 @@ export const useSppgSystemStore = create<SppgSystemState>()(
         {
           id: 3,
           kodeKeluar: "BK-291026-03",
+          stockId: "STK-251026-02",
           productId: "PRD-251026-05",
           namaBarang: "Jagung Manis",
           tujuan: "Dapur Pengolahan Sup Siang",
@@ -324,6 +364,21 @@ export const useSppgSystemStore = create<SppgSystemState>()(
           satuan: "Kg",
           date: "29-10-2026",
           petugas: "Rini Astuti",
+        },
+      ],
+
+      sppgReturnList: [
+        {
+          id: 1,
+          orderId: "ORD-SPPG-251026-01",
+          stockId: "STK-251026-01",
+          productId: "PRD-251026-04",
+          namaBarang: "Pisang Cavendish",
+          pemasok: "Koperasi Budi Luhur",
+          qty: 5,
+          satuan: "Sisir",
+          reason: "Terlalu Matang",
+          date: "29-10-2026",
         },
       ],
 
@@ -488,6 +543,14 @@ export const useSppgSystemStore = create<SppgSystemState>()(
       deleteBarangKeluar: (id) =>
         set((state) => ({
           barangKeluarList: state.barangKeluarList.filter((b) => b.id !== id),
+        })),
+
+      addSppgReturn: (item) =>
+        set((state) => ({
+          sppgReturnList: [
+            { ...item, id: Date.now() },
+            ...state.sppgReturnList,
+          ],
         })),
 
       addOrder: (item) =>
