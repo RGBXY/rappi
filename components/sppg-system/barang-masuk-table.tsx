@@ -191,22 +191,21 @@ export default function BarangMasukTable() {
     );
   };
 
+  // Scan seluruh produk sekaligus (quick scan all)
+  const handleScanAll = () => {
+    setDraftItems((prev) =>
+      prev.map((item) => ({
+        ...item,
+        scanned: true,
+      }))
+    );
+    triggerToast("Seluruh barcode komoditas pesanan berhasil dipindai!");
+  };
+
   // 1. Eksekusi simpan barang masuk dan retur
   const handleScanSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (draftItems.length === 0) return;
-
-    // Validasi: seluruh barang yang diterima (diterimaQty > 0) harus di-scan terlebih dahulu
-    const unscannedAccepted = draftItems.some(
-      (item) => item.diterimaQty > 0 && !item.scanned
-    );
-
-    if (unscannedAccepted) {
-      alert(
-        "Harap selesaikan pemindaian (scan barcode) untuk seluruh produk yang diterima ke gudang!"
-      );
-      return;
-    }
 
     const currentOrder = store.orders.find((o) => o.orderId === selectedOrderId);
     const namaKoperasi = currentOrder?.koperasi || "Koperasi Budi Luhur";
@@ -218,6 +217,7 @@ export default function BarangMasukTable() {
     const dateStr = `${day}-${month}-${year}`;
 
     const receivedNames: string[] = [];
+    const returnItemsToSync: any[] = [];
 
     // Proses masing-masing produk
     draftItems.forEach((item, idx) => {
@@ -252,30 +252,47 @@ export default function BarangMasukTable() {
           date: dateStr,
         });
 
-        // Sinkronkan ke returnList Koperasi
-        try {
-          const coperativeStore = useProductStore.getState();
-          coperativeStore.returnList.push({
-            id: Date.now() + idx + 10,
-            stockId: item.stockId,
-            orderId: selectedOrderId,
-            productId: item.productId,
-            name: item.name,
-            qty: item.returQty,
-            satuan: item.satuan,
-            reason: item.returReason,
-            status: "Pending",
-            date: dateStr,
-          });
-        } catch {
-          // ignore error if store unavailable
-        }
+        // Kumpulkan data retur untuk langsung dikirim ke fitur Stok Koperasi (bagian Retur)
+        returnItemsToSync.push({
+          stockId: item.stockId,
+          orderId: selectedOrderId,
+          productId: item.productId,
+          name: item.name,
+          qty: item.returQty,
+          satuan: item.satuan,
+          reason: item.returReason,
+          status: "Pending",
+          date: dateStr,
+        });
       }
     });
 
+    // Sinkronkan langsung ke returnList Koperasi di useProductStore
+    if (returnItemsToSync.length > 0) {
+      try {
+        const coperativeStore = useProductStore.getState();
+        if (typeof coperativeStore.addReturnItems === "function") {
+          coperativeStore.addReturnItems(returnItemsToSync);
+        } else {
+          returnItemsToSync.forEach((r) => coperativeStore.addReturnItem(r));
+        }
+      } catch (err) {
+        console.error("Gagal menyinkronkan data retur ke Koperasi:", err);
+      }
+    }
+
     setIsScanModalOpen(false);
 
-    if (receivedNames.length > 0) {
+    if (receivedNames.length > 0 && returnItemsToSync.length > 0) {
+      setLastReceivedItem({
+        koperasi: namaKoperasi,
+        namaBarang: receivedNames.join(", "),
+      });
+      setIsReviewModalOpen(true);
+      triggerToast(
+        `Penerimaan berhasil! ${returnItemsToSync.length} produk retur langsung terkirim ke bagian Retur Koperasi.`
+      );
+    } else if (receivedNames.length > 0) {
       setLastReceivedItem({
         koperasi: namaKoperasi,
         namaBarang: receivedNames.join(", "),
@@ -284,7 +301,9 @@ export default function BarangMasukTable() {
       setIsReviewModalOpen(true);
       triggerToast("Penerimaan barang masuk berhasil dicatat ke gudang SPPG!");
     } else {
-      triggerToast("Seluruh produk berhasil dicatat sebagai Retur ke Koperasi.");
+      triggerToast(
+        "Seluruh produk retur berhasil dikirim dan masuk ke bagian Retur Koperasi!"
+      );
     }
   };
 
@@ -459,9 +478,21 @@ export default function BarangMasukTable() {
                     <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider">
                       Daftar Komoditas Pesanan
                     </h4>
-                    <span className="text-xs text-gray-500">
-                      Total: {draftItems.length} Produk
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-500">
+                        Total: {draftItems.length} Produk
+                      </span>
+                      {draftItems.some((item) => item.diterimaQty > 0 && !item.scanned) && (
+                        <button
+                          type="button"
+                          onClick={handleScanAll}
+                          className="flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 rounded-lg text-[11px] font-semibold transition-colors cursor-pointer"
+                        >
+                          <ScanBarcode className="w-3 h-3" />
+                          <span>Scan Semua Sekaligus</span>
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   {draftItems.map((item) => (
@@ -652,18 +683,19 @@ export default function BarangMasukTable() {
                 </button>
                 <button
                   type="submit"
-                  disabled={
-                    draftItems.length === 0 ||
-                    draftItems.some((item) => item.diterimaQty > 0 && !item.scanned)
-                  }
+                  disabled={draftItems.length === 0}
                   className={`px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors shadow-xs ${
-                    draftItems.length === 0 ||
-                    draftItems.some((item) => item.diterimaQty > 0 && !item.scanned)
+                    draftItems.length === 0
                       ? "bg-gray-300 cursor-not-allowed"
                       : "bg-emerald-600 hover:bg-emerald-700 cursor-pointer"
                   }`}
                 >
-                  Selesaikan Penerimaan Barang Masuk
+                  {draftItems.some((item) => item.returQty > 0) &&
+                  draftItems.some((item) => item.diterimaQty > 0)
+                    ? "Selesaikan & Kirim (Masuk & Retur)"
+                    : draftItems.some((item) => item.returQty > 0)
+                    ? "Kirim Barang Retur ke Koperasi"
+                    : "Selesaikan Penerimaan Barang Masuk"}
                 </button>
               </div>
             </form>

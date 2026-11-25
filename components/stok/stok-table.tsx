@@ -16,6 +16,7 @@ export default function StockTable() {
 
   const statusStyles: Record<string, string> = {
     reworked: "bg-blue-50 text-blue-700 border-blue-200",
+    "olah kembali": "bg-blue-50 text-blue-700 border-blue-200",
     pending: "bg-amber-50 text-amber-700 border-amber-200",
     perish: "bg-red-50 text-red-700 border-red-200",
     rusak: "bg-red-50 text-red-700 border-red-200",
@@ -607,10 +608,18 @@ export default function StockTable() {
           <td className="py-3 px-4">
             <span
               className={`px-2 py-0.5 rounded-md text-xs border ${getStatusBadge(
-                row.status?.toLowerCase() === "perish" ? "rusak" : row.status
+                row.status?.toLowerCase() === "perish"
+                  ? "rusak"
+                  : row.status?.toLowerCase() === "reworked"
+                  ? "olah kembali"
+                  : row.status
               )}`}
             >
-              {row.status?.toLowerCase() === "perish" ? "Rusak" : row.status}
+              {row.status?.toLowerCase() === "perish"
+                ? "Rusak"
+                : row.status?.toLowerCase() === "reworked"
+                ? "Olah Kembali"
+                : row.status}
             </span>
           </td>
         </>

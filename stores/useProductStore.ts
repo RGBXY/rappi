@@ -52,6 +52,30 @@ interface InventoryState {
     stockWareHouse: number
   ) => void;
   upadteReturn: (id: number) => void;
+  addReturnItem: (item: {
+    stockId?: string;
+    orderId?: string;
+    productId: string;
+    name: string;
+    qty: number;
+    satuan?: string;
+    reason?: string;
+    status?: string;
+    date?: string;
+  }) => void;
+  addReturnItems: (
+    items: {
+      stockId?: string;
+      orderId?: string;
+      productId: string;
+      name: string;
+      qty: number;
+      satuan?: string;
+      reason?: string;
+      status?: string;
+      date?: string;
+    }[]
+  ) => void;
   processReturnItem: (payload: {
     id: number;
     destination: "reworked" | "rusak";
@@ -236,7 +260,7 @@ export const useProductStore = create<InventoryState>()(
           qty: 10,
           satuan: "Sisir",
           reason: "Terlalu Matang",
-          status: "Reworked",
+          status: "Olah Kembali",
           date: "30-10-2026",
         },
         {
@@ -276,7 +300,7 @@ export const useProductStore = create<InventoryState>()(
           stock: 10,
           satuan: "Sisir",
           reason: "Terlalu Matang",
-          status: "Reworked",
+          status: "Olah Kembali",
           date: "30-10-2026",
         },
       ],
@@ -375,6 +399,56 @@ export const useProductStore = create<InventoryState>()(
         set((s) => ({ products: s.products.filter((p) => p.id !== id) })),
       upadteReturn: (id) =>
         set((s) => ({ returnList: s.returnList.filter((p) => p.id !== id) })),
+      addReturnItem: (item) =>
+        set((s) => {
+          const today = new Date();
+          const day = String(today.getDate()).padStart(2, "0");
+          const month = String(today.getMonth() + 1).padStart(2, "0");
+          const year = today.getFullYear();
+          const dateFormatted = `${day}-${month}-${year}`;
+
+          const newReturn = {
+            id: Date.now() + Math.floor(Math.random() * 1000),
+            stockId: item.stockId || "STK-251026-01",
+            orderId: item.orderId || "ORD-251026-04",
+            productId: item.productId,
+            name: item.name,
+            qty: Number(item.qty) || 0,
+            satuan: item.satuan || "Kg",
+            reason: item.reason || "Kualitas Menurun",
+            status: item.status || "Pending",
+            date: item.date || dateFormatted,
+          };
+
+          return {
+            returnList: [newReturn, ...s.returnList],
+          };
+        }),
+      addReturnItems: (items) =>
+        set((s) => {
+          const today = new Date();
+          const day = String(today.getDate()).padStart(2, "0");
+          const month = String(today.getMonth() + 1).padStart(2, "0");
+          const year = today.getFullYear();
+          const dateFormatted = `${day}-${month}-${year}`;
+
+          const newReturns = items.map((item, idx) => ({
+            id: Date.now() + idx + Math.floor(Math.random() * 1000),
+            stockId: item.stockId || "STK-251026-01",
+            orderId: item.orderId || "ORD-251026-04",
+            productId: item.productId,
+            name: item.name,
+            qty: Number(item.qty) || 0,
+            satuan: item.satuan || "Kg",
+            reason: item.reason || "Kualitas Menurun",
+            status: item.status || "Pending",
+            date: item.date || dateFormatted,
+          }));
+
+          return {
+            returnList: [...newReturns, ...s.returnList],
+          };
+        }),
       processReturnItem: ({ id, destination, stockDisplay = 0, stockWareHouse = 0, reason }) =>
         set((s) => {
           const returnItem = s.returnList.find((r) => r.id === id);
@@ -390,7 +464,7 @@ export const useProductStore = create<InventoryState>()(
             r.id === id
               ? {
                   ...r,
-                  status: destination === "reworked" ? "Reworked" : "Rusak",
+                  status: destination === "reworked" ? "Olah Kembali" : "Rusak",
                   reason: reason || r.reason,
                 }
               : r
@@ -413,7 +487,7 @@ export const useProductStore = create<InventoryState>()(
               stock: stockDisplay + stockWareHouse,
               satuan: returnItem.satuan || "Kg",
               reason: reason || returnItem.reason,
-              status: "Reworked",
+              status: "Olah Kembali",
               date: dateFormatted,
             };
 
