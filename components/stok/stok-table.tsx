@@ -460,7 +460,6 @@ export default function StockTable() {
     { label: "Retur", badge: store.returnList.length },
     { label: "Olah Kembali" },
     { label: "Rusak" },
-    { label: "Riwayat Stok" },
   ];
 
   // Mapping konfigurasi tabel berdasarkan tab aktif
@@ -608,10 +607,10 @@ export default function StockTable() {
           <td className="py-3 px-4">
             <span
               className={`px-2 py-0.5 rounded-md text-xs border ${getStatusBadge(
-                row.status
+                row.status?.toLowerCase() === "perish" ? "rusak" : row.status
               )}`}
             >
-              {row.status}
+              {row.status?.toLowerCase() === "perish" ? "Rusak" : row.status}
             </span>
           </td>
         </>
@@ -669,36 +668,6 @@ export default function StockTable() {
             {row.qty} {row.satuan || "Kg"}
           </td>
           <td className="py-3 px-4 text-gray-600">{row.reason}</td>
-        </>
-      ),
-    },
-
-    "Riwayat Stok": {
-      headers: [
-        "ID Produk",
-        "Nama Produk",
-        "Stok Display",
-        "Stok Gudang",
-        "Total Stok",
-        "Tanggal",
-      ],
-      getData: () => store.stockChangeLog,
-      renderRow: (row) => (
-        <>
-          <td className="py-3 px-4 font-semibold text-gray-900">
-            {row.productId}
-          </td>
-          <td className="py-3 px-4">{row.name}</td>
-          <td className="py-3 px-4 text-gray-600">
-            {row.stockDisplay} {row.satuan || "Kg"}
-          </td>
-          <td className="py-3 px-4 text-gray-600">
-            {row.stockWareHouse} {row.satuan || "Kg"}
-          </td>
-          <td className="py-3 px-4 font-semibold text-gray-900">
-            {row.stock} {row.satuan || "Kg"}
-          </td>
-          <td className="py-3 px-4 text-gray-500 text-xs">{row.date}</td>
         </>
       ),
     },
@@ -1715,25 +1684,29 @@ export default function StockTable() {
                     {currentConfig.renderRow(row)}
                     {currentConfig.onUpdate && (
                       <td className="py-3 px-4 text-center">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (currentTab === "Stok") {
-                              handleOpenEditAllocation(row, "stok");
-                            } else if (currentTab === "Olah Kembali") {
-                              handleOpenEditAllocation(row, "reworked");
-                            } else if (currentTab === "Retur") {
-                              handleOpenProcessReturn(row);
-                            } else if (currentConfig.onUpdate) {
-                              currentConfig.onUpdate(row.id);
-                            }
-                          }}
-                          className="px-3 py-1.5 inline-flex items-center gap-1.5 rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100 text-xs font-semibold transition-colors cursor-pointer"
-                          title={currentTab === "Retur" ? "Proses Barang Retur" : "Ubah Penempatan Stok"}
-                        >
-                          <Edit className="w-3.5 h-3.5" />
-                          <span>Ubah</span>
-                        </button>
+                        {currentTab === "Retur" && row.status?.toLowerCase() !== "pending" ? (
+                          <span className="text-xs text-gray-400 font-medium select-none">-</span>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (currentTab === "Stok") {
+                                handleOpenEditAllocation(row, "stok");
+                              } else if (currentTab === "Olah Kembali") {
+                                handleOpenEditAllocation(row, "reworked");
+                              } else if (currentTab === "Retur") {
+                                handleOpenProcessReturn(row);
+                              } else if (currentConfig.onUpdate) {
+                                currentConfig.onUpdate(row.id);
+                              }
+                            }}
+                            className="px-3 py-1.5 inline-flex items-center gap-1.5 rounded-lg text-blue-600 bg-blue-50 hover:bg-blue-100 text-xs font-semibold transition-colors cursor-pointer"
+                            title={currentTab === "Retur" ? "Proses Barang Retur" : "Ubah Penempatan Stok"}
+                          >
+                            <Edit className="w-3.5 h-3.5" />
+                            <span>Ubah</span>
+                          </button>
+                        )}
                       </td>
                     )}
                   </tr>
