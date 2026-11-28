@@ -374,11 +374,11 @@ export const useProductStore = create<InventoryState>()(
           products: s.products.map((p) =>
             p.productId === productId
               ? {
-                  ...p,
-                  stockDisplay,
-                  stockWareHouse,
-                  stock: stockDisplay + stockWareHouse,
-                }
+                ...p,
+                stockDisplay,
+                stockWareHouse,
+                stock: stockDisplay + stockWareHouse,
+              }
               : p
           ),
         })),
@@ -387,11 +387,11 @@ export const useProductStore = create<InventoryState>()(
           reworkedList: s.reworkedList.map((item) =>
             item.id === id
               ? {
-                  ...item,
-                  stockDisplay,
-                  stockWareHouse,
-                  stock: stockDisplay + stockWareHouse,
-                }
+                ...item,
+                stockDisplay,
+                stockWareHouse,
+                stock: stockDisplay + stockWareHouse,
+              }
               : item
           ),
         })),
@@ -463,10 +463,10 @@ export const useProductStore = create<InventoryState>()(
           const updatedReturnList = s.returnList.map((r) =>
             r.id === id
               ? {
-                  ...r,
-                  status: destination === "reworked" ? "Olah Kembali" : "Rusak",
-                  reason: reason || r.reason,
-                }
+                ...r,
+                status: destination === "reworked" ? "Olah Kembali" : "Rusak",
+                reason: reason || r.reason,
+              }
               : r
           );
 
@@ -494,8 +494,8 @@ export const useProductStore = create<InventoryState>()(
             const updatedReworkedList =
               existingReworkedIndex >= 0
                 ? s.reworkedList.map((rw, idx) =>
-                    idx === existingReworkedIndex ? newReworkedItem : rw
-                  )
+                  idx === existingReworkedIndex ? newReworkedItem : rw
+                )
                 : [newReworkedItem, ...s.reworkedList];
 
             return {

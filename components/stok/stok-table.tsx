@@ -209,7 +209,6 @@ export default function StockTable() {
 
     setIsModalOpen(false);
     setCurrentTab("Stok Masuk");
-    triggerToast("Data stok masuk berhasil disimpan!");
   };
 
   // Helper untuk mendapatkan array produk dari sebuah row stok masuk
@@ -456,7 +455,7 @@ export default function StockTable() {
   // Daftar Tab dengan badge dinamis dari store dalam Bahasa Indonesia
   const productTabs: TabItem[] = [
     { label: "Stok" },
-    { label: "Stok Masuk", badge: validStockInList.length },
+    { label: "Stok Masuk" },
     { label: "Stok Keluar" },
     { label: "Retur", badge: store.returnList.length },
     { label: "Olah Kembali" },
